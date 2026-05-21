@@ -1,0 +1,54 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: springbootapp
+
+steps:
+
+# STEP 1 - Maven Build
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean package'
+    publishJUnitResults: true
+
+# STEP 2 - Prepare SonarQube
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'sonarqube'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'springbootapp'
+    cliProjectName: 'springbootapp'
+
+# STEP 3 - SonarQube Analysis
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'sonar:sonar'
+
+# STEP 4 - Docker Build and Push
+- task: Docker@2
+  inputs:
+    containerRegistry: 'proj5acr'
+    repository: 'springbootapp'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      latest
+      $(Build.BuildId)
+
+# STEP 5 - Install Trivy
+- script: |
+    wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.51.1_Linux-64bit.deb
+    sudo dpkg -i trivy_0.51.1_Linux-64bit.deb
+  displayName: Install Trivy
+
+# STEP 6 - Trivy Scan
+- script: |
+    trivy image proj5acr.azurecr.io/springbootapp:$(Build.BuildId)     
+  displayName: Trivy Scan
