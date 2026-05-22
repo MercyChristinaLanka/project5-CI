@@ -22,7 +22,7 @@ steps:
     containerRegistry: 'acrservice-conn'
     repository: 'springbootapp'
     command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'Dockerfile'
     tags: |
       latest
       $(Build.BuildId)
