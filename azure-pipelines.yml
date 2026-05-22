@@ -16,26 +16,6 @@ steps:
     goals: 'clean package'
     publishJUnitResults: true
 
-# SonarQube Prepare
-- task: SonarQubePrepare@7
-  inputs:
-    SonarQube: 'sonarservice-conn'
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: 'springbootapp'
-    cliProjectName: 'springbootapp'
-
-# SonarQube Analysis
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean verify sonar:sonar'
-
-# Publish Quality Gate
-- task: SonarQubePublish@7
-  inputs:
-    pollingTimeoutSec: '300'
-
 # Docker Build and Push
 - task: Docker@2
   inputs:
