@@ -29,6 +29,19 @@ stages:
     - checkout: self
 
     # -----------------------------------
+    # SonarCloud Prepare
+    # -----------------------------------
+    - task: SonarCloudPrepare@3
+      displayName: "Prepare SonarCloud Analysis"
+      inputs:
+        SonarCloud: 'sonarcloud-conn'
+        organization: 'mallipudianil22'
+        scannerMode: 'Other'
+        extraProperties: |
+          sonar.projectKey=mallipudianil22_Project5-CI
+          sonar.projectName=Project5-CI
+
+    # -----------------------------------
     # Maven Build
     # -----------------------------------
     - task: Maven@4
@@ -41,13 +54,27 @@ stages:
         jdkVersionOption: '1.17'
 
     # -----------------------------------
+    # SonarCloud Analysis
+    # -----------------------------------
+    - task: SonarCloudAnalyze@3
+      displayName: "Run SonarCloud Analysis"
+
+    # -----------------------------------
+    # Publish SonarCloud Results
+    # -----------------------------------
+    - task: SonarCloudPublish@3
+      displayName: "Publish SonarCloud Results"
+      inputs:
+        pollingTimeoutSec: '300'
+
+    # -----------------------------------
     # Docker Build
     # -----------------------------------
     - task: Docker@2
       displayName: "Build Docker Image"
       inputs:
         command: build
-        repository: $(acrName)/$(imageName)
+        repository: $(imageName)
         Dockerfile: Dockerfile
         tags: |
           $(imageTag)
@@ -58,7 +85,7 @@ stages:
     - script: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
-        trivy image $(acrName)/$(imageName):$(imageTag)
+        trivy image $(imageName):$(imageTag)
       displayName: "Trivy Image Scan"
 
     # -----------------------------------
@@ -74,7 +101,7 @@ stages:
           $(imageTag)
 
     # -----------------------------------
-    # Output Image Tag for Next Stage
+    # Export Image Tag
     # -----------------------------------
     - task: Bash@3
       name: SetImageTag
@@ -104,6 +131,9 @@ stages:
 
     - checkout: none
 
+    # -----------------------------------
+    # Clone GitOps Repo and Update Image
+    # -----------------------------------
     - task: Bash@3
       displayName: "Clone and Update GitOps Repo"
 
