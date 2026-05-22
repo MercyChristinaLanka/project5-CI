@@ -79,13 +79,14 @@ stages:
         Dockerfile: Dockerfile
         tags: |
           $(imageTag)
+    
     # -----------------------------------
     # Trivy Security Scan
     # -----------------------------------
     - script: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
-        trivy image $(imageName):$(imageTag)
+        trivy image $(acrName)/$(imageName):$(imageTag)
       displayName: "Trivy Image Scan"
 
     # -----------------------------------
