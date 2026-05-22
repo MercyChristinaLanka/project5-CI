@@ -67,6 +67,7 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
+    
     # -----------------------------------
     # Docker Build
     # -----------------------------------
@@ -74,11 +75,10 @@ stages:
       displayName: "Build Docker Image"
       inputs:
         command: build
-        repository: $(imageName)
+        repository: $(acrName)/$(imageName)
         Dockerfile: Dockerfile
         tags: |
           $(imageTag)
-
     # -----------------------------------
     # Trivy Security Scan
     # -----------------------------------
