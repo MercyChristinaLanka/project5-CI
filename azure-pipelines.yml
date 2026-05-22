@@ -5,8 +5,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  imageName: springbootapp
   acrName: proj5acr.azurecr.io
+  imageName: springbootapp
   imageTag: $(Build.BuildId)
 
 steps:
@@ -28,18 +28,19 @@ steps:
   displayName: Build Docker Image
   inputs:
     command: build
-    repository: proj5acr.azurecr.io/springbootapp
-    Dockerfile: 'Dockerfile'
+    repository: $(acrName)/$(imageName)
+    Dockerfile: Dockerfile
     tags: |
-      $(Build.BuildId)
+      $(imageTag)
+
 
 # ======================
-# Install Trivy + Scan
+# Trivy Scan (FIXED IMAGE NAME)
 # ======================
 - script: |
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
-    trivy image springbootapp:$(Build.BuildId)
+    trivy image $(acrName)/$(imageName):$(imageTag)
   displayName: Trivy Scan
 
 
@@ -51,6 +52,6 @@ steps:
   inputs:
     containerRegistry: 'acrservice-conn'
     command: push
-    repository: springbootapp
+    repository: $(imageName)
     tags: |
-      $(Build.BuildId)
+      $(imageTag)
