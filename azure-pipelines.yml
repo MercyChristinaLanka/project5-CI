@@ -96,12 +96,12 @@ stages:
       inputs:
         containerRegistry: 'acrservice-conn'
         command: push
-        repository: $(imageName)
+        repository: $(acrName)/$(imageName)
         tags: |
           $(imageTag)
 
     # -----------------------------------
-    # Output Image Tag for Next Stage
+    # Export Image Tag
     # -----------------------------------
     - task: Bash@3
       name: SetImageTag
