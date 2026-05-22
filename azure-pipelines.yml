@@ -166,7 +166,7 @@ stages:
           echo "Updating deployment.yaml with image:"
           echo $FULL_IMAGE
 
-          sed -i "s|image: .*|image: ${FULL_IMAGE}|" deployment.yaml
+          sed -i "s|image: .*java-app:.*|image: ${FULL_IMAGE}|g" deployment.yaml
 
           echo "Updated deployment.yaml:"
           cat deployment.yaml
