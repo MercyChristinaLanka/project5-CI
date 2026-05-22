@@ -6,7 +6,7 @@ pool:
 
 variables:
   acrName: proj5acr.azurecr.io
-  imageName: springbootapp
+  imageName: java-app
   imageTag: $(Build.BuildId)
 
 steps:
@@ -35,7 +35,7 @@ steps:
 
 
 # ======================
-# Trivy Scan (FIXED IMAGE NAME)
+# Trivy Scan
 # ======================
 - script: |
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
