@@ -91,12 +91,15 @@ stages:
     # -----------------------------------
     # Docker Push to ACR
     # -----------------------------------
+        # -----------------------------------
+    # Docker Push to ACR
+    # -----------------------------------
     - task: Docker@2
       displayName: "Push Docker Image to ACR"
       inputs:
         containerRegistry: 'acrservice-conn'
         command: push
-        repository: $(acrName)/$(imageName)
+        repository: $(imageName)
         tags: |
           $(imageTag)
 
