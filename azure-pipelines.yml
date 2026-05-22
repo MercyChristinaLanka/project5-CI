@@ -39,7 +39,7 @@ stages:
         scannerMode: 'Other'
         extraProperties: |
           sonar.projectKey=mallipudianil22_Project5-CI
-          sonar.projectName=Project5-CI
+          sonar.projectName=mallipudianil22
 
     # -----------------------------------
     # Maven Build
@@ -67,7 +67,6 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-    
     # -----------------------------------
     # Docker Build
     # -----------------------------------
@@ -79,7 +78,7 @@ stages:
         Dockerfile: Dockerfile
         tags: |
           $(imageTag)
-    
+
     # -----------------------------------
     # Trivy Security Scan
     # -----------------------------------
@@ -102,7 +101,7 @@ stages:
           $(imageTag)
 
     # -----------------------------------
-    # Export Image Tag
+    # Output Image Tag for Next Stage
     # -----------------------------------
     - task: Bash@3
       name: SetImageTag
