@@ -28,11 +28,10 @@ steps:
   displayName: Build Docker Image
   inputs:
     command: build
-    repository: springbootapp
+    repository: proj5acr.azurecr.io/springbootapp
     Dockerfile: 'Dockerfile'
     tags: |
       $(Build.BuildId)
-
 
 # ======================
 # Install Trivy + Scan
@@ -51,7 +50,7 @@ steps:
   displayName: Push Docker Image
   inputs:
     containerRegistry: 'acrservice-conn'
-    repository: 'springbootapp'
     command: push
+    repository: springbootapp
     tags: |
       $(Build.BuildId)
