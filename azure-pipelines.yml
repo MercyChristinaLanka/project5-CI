@@ -36,20 +36,14 @@ steps:
 
 
 # ======================
-# Install Trivy (FIXED)
+# Install Trivy
 # ======================
 - script: |
     sudo apt-get update -y
-    sudo apt-get install -y wget
+    sudo apt-get install -y curl
 
-    wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.53.0_Linux-64bit.deb
-    sudo dpkg -i trivy_0.53.0_Linux-64bit.deb
+    # Install Trivy (stable method)
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+
+    trivy --version
   displayName: Install Trivy
-
-
-# ======================
-# Trivy Scan (FIXED IMAGE NAME)
-# ======================
-- script: |
-    trivy image $(acrName)/$(imageName):$(imageTag)
-  displayName: Trivy Scan
