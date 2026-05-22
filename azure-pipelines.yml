@@ -6,17 +6,24 @@ pool:
 
 variables:
   imageName: springbootapp
+  acrName: proj5acr.azurecr.io
+  imageTag: $(Build.BuildId)
 
 steps:
 
+# ======================
 # Maven Build
+# ======================
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean package'
     publishJUnitResults: true
 
-# Docker Build and Push
+
+# ======================
+# Docker Build & Push
+# ======================
 - task: Docker@2
   inputs:
     containerRegistry: 'acrservice-conn'
@@ -27,13 +34,22 @@ steps:
       latest
       $(Build.BuildId)
 
-# Install Trivy
+
+# ======================
+# Install Trivy (FIXED)
+# ======================
 - script: |
-    wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.51.1_Linux-64bit.deb
-    sudo dpkg -i trivy_0.51.1_Linux-64bit.deb
+    sudo apt-get update -y
+    sudo apt-get install -y wget
+
+    wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.53.0_Linux-64bit.deb
+    sudo dpkg -i trivy_0.53.0_Linux-64bit.deb
   displayName: Install Trivy
 
-# Trivy Scan
+
+# ======================
+# Trivy Scan (FIXED IMAGE NAME)
+# ======================
 - script: |
-    trivy image proj5acr.azurecr.io/springbootapp:$(Build.BuildId)
+    trivy image $(acrName)/$(imageName):$(imageTag)
   displayName: Trivy Scan
